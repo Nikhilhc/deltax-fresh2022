@@ -21,7 +21,7 @@ def register_request(request):
     context = {
         'form':form
     }
-    return render(request,'Login.html',context)
+    return render(request,'register.html',context)
 
 def login_view(request):
     form = LoginForm(request.POST or None)
@@ -49,3 +49,8 @@ def login_view(request):
         form = LoginForm()
     context = {'form':form}
     return render(request,'Login.html',context)
+
+def logout_view(request):
+    logout(request)
+    messages.success(request, 'Successfully Logged Out. Feel free to login again')
+    return redirect('deltax_frontend:login')
