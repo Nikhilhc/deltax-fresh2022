@@ -18,5 +18,6 @@ from django.urls import path,include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('deltax/',include('deltax_spotify.urls'))
+    path('deltax/',include('deltax_spotify.urls')),
+    path('api-auth/', include('rest_framework.urls'))
 ]
