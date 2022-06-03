@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'deltax_spotify',
     'rest_framework',
+    'deltax_frontend'
 ]
 
 MIDDLEWARE = [
