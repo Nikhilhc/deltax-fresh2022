@@ -10,4 +10,4 @@ class ArtistSerializer(serializers.ModelSerializer):
 class SongsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Songs
-        fields = ['name','date_of_release','cover']
+        fields = ['name','date_of_release']
