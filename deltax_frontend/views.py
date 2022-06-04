@@ -46,7 +46,7 @@ def login_view(request):
             login(request,user)
             messages.success(request,'Successfully Logged In. Welcome!!')
             #user.emailconfirmed.active_user_email()
-            return redirect("deltax_frontend:home")
+            return redirect("deltax_frontend:songs")
     else:
         form = LoginForm()
     context = {'form':form}
