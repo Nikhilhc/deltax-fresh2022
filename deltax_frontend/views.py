@@ -73,7 +73,7 @@ def Songs_page(request):
             continue
         else:
             all_songs1.append(i)
-    context = {'all_songs':all_songs1}
+    context = {'all_songs':all_songs1[:10]}
     return render(request,'Songs.html',context=context)
 
 def artists_page(request):
@@ -114,7 +114,7 @@ def add_song(request):
             artist = request.POST.get('artist')
             artist =  str(request.POST).split("'artist': ")[1][1:str(request.POST).split("'artist': ")[1].find(']')].replace("'","")
             cover_image = request.FILES.get('cover_image')
-            artist_create = Songs.objects.create(name=name,cover_image=cover_image,date_of_release=date_of_release,rating=rating)
+            artist_create = Songs.objects.create(name=name,cover_image=cover_image,date_of_release=date_of_release)
             for i in artist.split(','):
                 artist_object = Artists.objects.get(id=int(i))
                 artist_create.artists.add(artist_object)
