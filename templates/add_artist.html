@@ -1,0 +1,78 @@
+
+{% extends 'header.html' %}
+{% block content %}
+<div class="d-flex justify-content-center">
+    <div class="col-lg-4 col-mb-6 col-sm-6">
+
+        <!-- Pills navs -->
+
+        <!-- Pills content -->
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
+            <form method="POST" action="/login">
+              {% csrf_token %}
+              <div class="text-center mb-3">
+                <p><b>Add Artist</b></p>
+              </div>
+              <!-- Email input -->
+              <div class="form-outline mb-4">
+                <input type="text" id="name" name="name" class="form-control" />
+                <label class="form-label" for="name">Artist Name</label>
+              </div>
+              <div class="form-outline mb-4">
+                <input type="date" id="date" name="dob" class="form-control" />
+                <label class="form-label" for="date">DOB</label>
+              </div>
+              <div class="form-outline mb-4">
+                <input type="text" id="bio" name="bio" class="form-control" />
+                <label class="form-label" for="bio">Bio</label>
+              </div>
+              <!-- Submit button -->
+              <button type="button" class="btn btn-primary btn-block mb-4" onclick="AddArtist(this)">Add</button>
+
+            </form>
+          </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+{% for msg in messages %}
+    alert('{{msg}}')
+{% endfor %}
+
+function signUp(e){
+  document.getElementById('tab-register').click()
+  console.log('hii')
+}
+
+async function AddArtist(e){
+  name = document.getElementById('name').value
+  dob = document.getElementById('date').value
+  bio = document.getElementById('bio').value
+  if (name == ''){
+    alert('Please enter name')
+    return
+  }
+  if (dob == ''){
+    alert('Please enter dob')
+    return
+  }
+  if (bio == ''){
+    alert('Please enter bio')
+    return
+  }
+  thisUrl = window.location.href.split('/').slice(0,3).join('/')
+  query_string = 'action=add_artist&name='+name+'&dob='+dob+'&bio='+bio
+  url = thisUrl + '/add_artist?' + query_string
+  response = await fetch(url)
+  data = await response.json()
+  console.log(data)
+  if (data['result']==true){
+    alert('Artist Added Successfully.')
+  }
+  else{
+    alert('Error Adding Artist.')
+  }
+}
+</script>
+{% endblock %}

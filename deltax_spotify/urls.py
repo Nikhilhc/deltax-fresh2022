@@ -7,5 +7,6 @@ from .views import SongsView
 app_name = 'deltax_spotify'
 urlpatterns = [
     path('artist/',ArtistView.as_view(),name='artist'),
-    path('songs/',SongsView.as_view(),name='songs')
+    path('songs/',SongsView.as_view(),name='songs'),
+    path('ajax/',SongsView.as_view(),name='songs')
 ]

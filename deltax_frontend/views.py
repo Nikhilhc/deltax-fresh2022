@@ -1,11 +1,14 @@
 from django.shortcuts import  render, redirect
 from .forms import RegistrationForm,LoginForm
 from django.contrib.auth.models import User
+from django.http import JsonResponse
 from django.contrib.auth import authenticate,logout,login
 from django.contrib import messages
+from .models import Songs,Artists
+import requests
+import json
 
-def homepage(request):
-    return render(request,'HomePage.html')
+
 
 def register_request(request):
     form = RegistrationForm(request.POST or None)
@@ -54,3 +57,36 @@ def logout_view(request):
     logout(request)
     messages.success(request, 'Successfully Logged Out. Feel free to login again')
     return redirect('deltax_frontend:login')
+
+def Songs_page(request):
+    all_songs = Songs.objects.all()
+    context = {'all_songs':all_songs}
+    return render(request,'Songs.html',context=context)
+
+def artists_page(request):
+    all_artists = Artists.objects.all()
+    artist_name = []
+    artist_details = {}
+    artist_details_full = []
+    if request.method=='POST':
+        print(request.method)
+    for i in all_artists:
+        artist_name.append((i.name,i.dob))
+    for i in artist_name:
+        artist_details['name']=i[0]
+        artist_details['details'] = Songs.objects.filter(artists__name=i[0])
+        artist_details['dob']=i[1]
+        artist_details_full.append(artist_details.copy())
+    all_songs = Songs.objects.all()
+    context = {'all_artists':all_artists,'artist_details':artist_details_full}
+    return render(request,'artists.html',context=context)
+
+def add_artist_ajax(request):
+    if request.GET.get('action')=='add_artist':
+        name = request.GET.get('name')
+        dob = request.GET.get('dob')
+        bio = request.GET.get('bio')
+        artist_create = Artists.objects.create(name=name,dob=dob,bio=bio)
+        artist_create.save()
+        return JsonResponse({'ret':True,'result':True})
+    return render(request, 'add_artist.html')

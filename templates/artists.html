@@ -1,0 +1,51 @@
+{% extends 'header.html' %}
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="d-flex justify-content-center mb-4">
+            <h2><b>Deltax-Spotify</b></h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="d-flex justify-content-left mb-4">
+            <h3>Top 10 Songs</h3>
+            <a href="/add_artist" class="btn btn-primary d-flex justify-content-right mb-4 mx-4">+ Add Artist </a>
+        </div>
+    </div>
+    <div class="row" style="background-color: gainsboro;">
+        <div class="col-lg-4 col-mb-6 col-sm-4 mt-3">
+            <h5>Artist</h5>
+        </div>
+        <div class="col-lg-4 col-mb-6 col-sm-4 mt-3">
+            <h5>Songs</h5>
+        </div>
+        <div class="col-lg-4 col-mb-6 col-sm-4 mt-3">
+            <h5>Date of Birth</h5>
+        </div>
+    </div>
+    {% for artist in artist_details %}
+    <div class="row" style="background-color: white;">
+        <div class="col-lg-4 col-mb-4 col-sm-4- mt-3">
+            <h6>{{artist.name}}</h6>
+        </div>
+        <div class="col-lg-4 col-mb-4 col-sm-4 mt-3">
+            <h6>
+                {% for art in artist.details %}
+                    {{art}}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </h6>
+        </div>
+        <div class="col-lg-4 col-mb-4 col-sm-4 mt-3">
+            <h6>{{artist.dob}}</h6>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<script type="text/javascript">
+{% for msg in messages %}
+    alert('{{msg}}')
+{% endfor %}
+</script>
+{% endblock %}

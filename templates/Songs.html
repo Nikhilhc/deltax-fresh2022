@@ -1,0 +1,63 @@
+{% extends 'header.html' %}
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="d-flex justify-content-center mb-4">
+            <h2><b>Deltax-Spotify</b></h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="d-flex justify-content-left mb-4">
+            <h3>Top 10 Songs</h3>
+            <button class="btn btn-primary d-flex justify-content-right mb-4 mx-4">+ Add Songs </button>
+        </div>
+    </div>
+    <div class="row" style="background-color: gainsboro;">
+        <div class="col-lg-2 col-mb-6 col-sm-12 mt-3">
+            <h5>Artwork</h5>
+        </div>
+        <div class="col-lg-2 col-mb-6 col-sm-12 mt-3">
+            <h5>Artwork</h5>
+        </div>
+        <div class="col-lg-3 col-mb-6 col-sm-12 mt-3">
+            <h5>Artist</h5>
+        </div>
+        <div class="col-lg-3 col-mb-6 col-sm-12 mt-3">
+            <h5>Date of Release</h5>
+        </div>
+        <div class="col-lg-2 col-mb-6 col-sm-12 mt-3">
+            <h5>Rating</h5>
+        </div>
+    </div>
+    {% for song in all_songs %}
+    <div class="row">
+        <div class="col-lg-2 col-mb-6 col-sm-12 mt-4">
+            <img src="{{song.cover_image.url}}" width="80%">
+        </div>
+        <div class="col-lg-2 col-mb-6 col-sm-12 mt-4">
+            <h6>{{song.name}}</h6>
+        </div>
+        <div class="col-lg-3 col-mb-6 col-sm-12 mt-4">
+            <h6>
+                {% for artist in song.artists.values %}
+                {{artist.name}}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </h6>
+        </div>
+        <div class="col-lg-3 col-mb-6 col-sm-12 mt-4">
+            <h6>{{song.date_of_release}}</h6>
+        </div>
+        <div class="col-lg-2 col-mb-6 col-sm-12 mt-4">
+            <h6>{{song.rating}}</h6>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<script type="text/javascript">
+{% for msg in messages %}
+    alert('{{msg}}')
+{% endfor %}
+</script>
+{% endblock %}
