@@ -131,7 +131,6 @@ def put_rating_ajax(request):
         song_id = request.GET.get('song_id')
         rating = request.GET.get('rating')
         song_object =  Songs.objects.get(id=song_id)
-        import ipdb;ipdb.set_trace()
         all_rating = Rating.objects.create(author=request.user,song=song_object,rating=rating)
         all_rating.save()
         return JsonResponse({'ret': True, 'result': True}, safe=False)
