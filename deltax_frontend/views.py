@@ -125,8 +125,6 @@ def get_rating_ajax(request):
         return JsonResponse({'ret': list(all_rating.values()), 'result': True}, safe=False)
 
 def put_rating_ajax(request):
-    import ipdb;
-    ipdb.set_trace()
     if request.GET.get('action')=='put_rating':
         song_id = request.GET.get('song_id')
         rating = request.GET.get('rating')
