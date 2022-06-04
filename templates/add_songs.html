@@ -9,26 +9,35 @@
         <!-- Pills content -->
         <div class="tab-content">
           <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
-            <form method="POST" action="/login">
+            <form method="POST" action="/add_song" enctype="multipart/form-data">
               {% csrf_token %}
               <div class="text-center mb-3">
                 <p><b>Add Artist</b></p>
               </div>
               <!-- Email input -->
-              <div class="form-outline mb-4">
+              <div class="form-outline mb-2">
+                <label class="form-label" for="name">Song Name</label>
                 <input type="text" id="name" name="name" class="form-control" />
-                <label class="form-label" for="name">Artist Name</label>
               </div>
-              <div class="form-outline mb-4">
-                <input type="date" id="date" name="dob" class="form-control" />
-                <label class="form-label" for="date">DOB</label>
+              <div class="form-outline mb-2">
+                <label class="form-label" for="cover_image">Cover</label>
+                <input class="btn btn-primary" type="file" id="cover_image" name="cover_image" class="form-control" />
               </div>
-              <div class="form-outline mb-4">
-                <input type="text" id="bio" name="bio" class="form-control" />
-                <label class="form-label" for="bio">Bio</label>
+              <div class="form-outline mb-2">
+                <label class="form-label" for="date">Date of Release</label>
+                <input type="date" id="date" name="date_of_release" class="form-control" />
+              </div>
+              <div class="form-outline mb-2">
+                <label class="form-label" for="artist">Artist</label></br>
+                <select class="selectpicker" id="artist" name="artist" multiple data-live-search="true">
+                </select>
+              </div>
+              <div class="form-outline mb-2">
+                <label class="form-label" for="rating">Rating</label>
+                <input type="number" id="rating" name="rating" class="form-control" />
               </div>
               <!-- Submit button -->
-              <button type="button" class="btn btn-primary btn-block mb-4" onclick="AddArtist(this)">Add</button>
+              <button type="submit" class="btn btn-primary btn-block mb-4">Add</button>
 
             </form>
           </div>
@@ -40,15 +49,29 @@
     alert('{{msg}}')
 {% endfor %}
 
-function signUp(e){
-  document.getElementById('tab-register').click()
-  console.log('hii')
+
+window.onload = async function(){
+  thisUrl = window.location.href.split('/').slice(0,3).join('/')
+  query_string = 'action=get_artist'
+  url = thisUrl + '/get_artist?' + query_string
+  response = await fetch(url)
+  data = await response.json()
+  console.log(data['ret'].length)
+  var select = document.getElementById("artist");
+    for(let i = 0; i < data['ret'].length; i++) {
+      console.log(i)
+        var option = document.createElement('option');
+        option.text = data['ret'][i].name
+        option.value = data['ret'][i].id;
+        select.add(option, 0);
+    }
+   $('#artist').selectpicker('refresh')
 }
 
 async function AddArtist(e){
   name = document.getElementById('name').value
-  dob = document.getElementById('date').value
-  bio = document.getElementById('bio').value
+  date_of_release = document.getElementById('date_of_release').value
+  artist = document.getElementById('artist').value
   if (name == ''){
     alert('Please enter name')
     return
@@ -61,18 +84,8 @@ async function AddArtist(e){
     alert('Please enter bio')
     return
   }
-  thisUrl = window.location.href.split('/').slice(0,3).join('/')
-  query_string = 'action=add_artist&name='+name+'&dob='+dob+'&bio='+bio
-  url = thisUrl + '/add_artist?' + query_string
-  response = await fetch(url)
-  data = await response.json()
-  console.log(data)
-  if (data['result']==true){
-    alert('Artist Added Successfully.')
-  }
-  else{
-    alert('Error Adding Artist.')
-  }
+
 }
+
 </script>
 {% endblock %}

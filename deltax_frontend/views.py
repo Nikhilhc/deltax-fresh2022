@@ -89,3 +89,24 @@ def add_artist_ajax(request):
         artist_create.save()
         return JsonResponse({'ret':True,'result':True})
     return render(request, 'add_artist.html')
+
+def add_song(request):
+    if request.method =='POST':
+        name = request.POST.get('name')
+        date_of_release = request.POST.get('date_of_release')
+        rating = request.POST.get('rating')
+        artist = request.POST.get('artist')
+        artist =  str(request.POST).split("'artist': ")[1][1:str(request.POST).split("'artist': ")[1].find(']')].replace("'","")
+        cover_image = request.FILES.get('cover_image')
+        artist_create = Songs.objects.create(name=name,cover_image=cover_image,date_of_release=date_of_release,rating=rating)
+        for i in artist.split(','):
+            artist_object = Artists.objects.get(id=int(i))
+            artist_create.artists.add(artist_object)
+        artist_create.save()
+        return render(request, 'add_songs.html')
+    return render(request, 'add_songs.html')
+
+def get_artist_ajax(request):
+    if request.GET.get('action')=='get_artist':
+        all_artist = Artists.objects.all()
+        return JsonResponse({'ret':list(all_artist.values()),'result':True},safe=False)
