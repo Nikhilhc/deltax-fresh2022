@@ -5,7 +5,6 @@ from django.http import JsonResponse
 from django.contrib.auth import authenticate,logout,login
 from django.contrib import messages
 from .models import Songs,Artists
-import requests
 import json
 
 
