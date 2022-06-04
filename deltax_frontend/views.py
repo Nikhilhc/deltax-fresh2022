@@ -62,7 +62,7 @@ def logout_view(request):
 def Songs_page(request):
     all_songs = Songs.objects.all()
     lst=[]
-    sorted_lst = sorted(Rating.objects.all().values_list('song').annotate(Avg('rating')))
+    sorted_lst = sorted(Rating.objects.all().values_list('song_id').annotate(Avg('rating')))
     sorted_lst.sort(reverse=True,key=lambda a:a[1])
     for i in sorted_lst:
         lst.append(i[0])
