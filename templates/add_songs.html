@@ -150,6 +150,10 @@ async function AddArtist(e){
     $('#artist').selectpicker('refresh')
     alert('Artist Added Successfully.')
     get_artist_list()
+    document.getElementById('artist_page').style.display='none'
+    name = document.getElementById('artist_name').value=""
+  dob = document.getElementById('date').value=""
+  bio = document.getElementById('bio').value=""
   }
   else{
     alert('Error Adding Artist.')
