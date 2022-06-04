@@ -20,6 +20,6 @@ class Songs(models.Model):
 class Rating(models.Model):
     author = models.ForeignKey(User,on_delete=models.CASCADE)
     song = models.ForeignKey(Songs,null=True,blank=True,on_delete=models.CASCADE,related_name='rating')
-    rating = models.CharField(max_length=11)
+    rating = models.IntegerField(max_length=11)
     def __str__(self):
         return str(self.song.name)
