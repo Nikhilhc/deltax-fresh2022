@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate,logout,login
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from .models import Songs,Artists,Rating
+from django.db.models import Avg,Count
 import json
 
 
@@ -60,7 +61,19 @@ def logout_view(request):
 
 def Songs_page(request):
     all_songs = Songs.objects.all()
-    context = {'all_songs':all_songs}
+    lst=[]
+    sorted_lst = sorted(Rating.objects.all().values_list('song').annotate(Avg('rating')))
+    sorted_lst.sort(reverse=True,key=lambda a:a[1])
+    for i in sorted_lst:
+        lst.append(i[0])
+    objects = Songs.objects.filter(id__in=lst)
+    all_songs1 = sorted(objects, key=lambda i: lst.index(i.pk))
+    for i in all_songs:
+        if i in all_songs1:
+            continue
+        else:
+            all_songs1.append(i)
+    context = {'all_songs':all_songs1}
     return render(request,'Songs.html',context=context)
 
 def artists_page(request):
