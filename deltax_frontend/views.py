@@ -19,7 +19,7 @@ def register_request(request):
         new_user = form.save(commit=False)
         new_user.save()
         messages.success(request,'Successfully Registered.')
-        return redirect("deltax_frontend:home")
+        return redirect("deltax_frontend:songs")
     context = {
         'form':form
     }
