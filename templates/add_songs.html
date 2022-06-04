@@ -9,7 +9,7 @@
         <!-- Pills content -->
         <div class="tab-content">
           <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
-            <form method="POST" action="/add_song" enctype="multipart/form-data">
+            <form id="add_song_form" method="POST" action="/add_song" enctype="multipart/form-data">
               {% csrf_token %}
               <div class="text-center mb-3">
                 <p><b>Add Artist</b></p>
@@ -21,11 +21,11 @@
               </div>
               <div class="form-outline mb-2">
                 <label class="form-label" for="cover_image">Cover</label>
-                <input class="btn btn-primary" type="file" id="cover_image" name="cover_image" class="form-control" />
+                <input class="" type="file" id="cover_image" name="cover_image" class="form-control" />
               </div>
               <div class="form-outline mb-2">
-                <label class="form-label" for="date">Date of Release</label>
-                <input type="date" id="date" name="date_of_release" class="form-control" />
+                <label class="form-label" for="date_of_release">Date of Release</label>
+                <input type="date" id="date_of_release" name="date_of_release" class="form-control" />
               </div>
               <div class="form-outline mb-2">
                 <label class="form-label" for="artist">Artist</label></br>
@@ -37,7 +37,7 @@
                 <input type="number" id="rating" name="rating" class="form-control" />
               </div>
               <!-- Submit button -->
-              <button type="submit" class="btn btn-primary btn-block mb-4">Add</button>
+              <button type="button" class="btn btn-primary btn-block mb-4" onclick="AddArtist(this)">Add</button>
 
             </form>
           </div>
@@ -72,19 +72,24 @@ async function AddArtist(e){
   name = document.getElementById('name').value
   date_of_release = document.getElementById('date_of_release').value
   artist = document.getElementById('artist').value
+  rating = document.getElementById('rating').value
   if (name == ''){
     alert('Please enter name')
     return
   }
-  if (dob == ''){
-    alert('Please enter dob')
+  if (date_of_release == ''){
+    alert('Please enter date of release.')
     return
   }
-  if (bio == ''){
-    alert('Please enter bio')
+  if (artist == ''){
+    alert('Please enter artist.')
     return
   }
-
+  if (rating == ''){
+    alert('Please enter rating.')
+    return
+  }
+  document.getElementById('add_song_form').submit()
 }
 
 </script>
