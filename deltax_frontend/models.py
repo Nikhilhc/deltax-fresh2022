@@ -18,8 +18,15 @@ class Songs(models.Model):
         return str(self.name)
 
 class Rating(models.Model):
+    RATINGS = (
+        (1, '1'),
+        (2, '2'),
+        (3, '3'),
+        (4, '4'),
+        (5, '5'),
+    )
     author = models.ForeignKey(User,on_delete=models.CASCADE)
     song = models.ForeignKey(Songs,null=True,blank=True,on_delete=models.CASCADE,related_name='rating')
-    rating = models.IntegerField(max_length=11)
+    rating = models.IntegerField(choices=RATINGS,default=0)
     def __str__(self):
         return str(self.song.name)
