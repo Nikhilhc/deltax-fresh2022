@@ -4,7 +4,8 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.contrib.auth import authenticate,logout,login
 from django.contrib import messages
-from .models import Songs,Artists
+from django.contrib.auth import get_user_model
+from .models import Songs,Artists,Rating
 import json
 
 
@@ -65,6 +66,7 @@ def Songs_page(request):
 def artists_page(request):
     all_artists = Artists.objects.all()
     artist_name = []
+    user = get_user_model()
     artist_details = {}
     artist_details_full = []
     if request.method=='POST':
@@ -92,21 +94,44 @@ def add_artist_ajax(request):
 
 def add_song(request):
     if request.method =='POST':
-        name = request.POST.get('name')
-        date_of_release = request.POST.get('date_of_release')
-        rating = request.POST.get('rating')
-        artist = request.POST.get('artist')
-        artist =  str(request.POST).split("'artist': ")[1][1:str(request.POST).split("'artist': ")[1].find(']')].replace("'","")
-        cover_image = request.FILES.get('cover_image')
-        artist_create = Songs.objects.create(name=name,cover_image=cover_image,date_of_release=date_of_release,rating=rating)
-        for i in artist.split(','):
-            artist_object = Artists.objects.get(id=int(i))
-            artist_create.artists.add(artist_object)
-        artist_create.save()
-        return render(request, 'add_songs.html')
+        try:
+            name = request.POST.get('name')
+            date_of_release = request.POST.get('date_of_release')
+            rating = request.POST.get('rating')
+            artist = request.POST.get('artist')
+            artist =  str(request.POST).split("'artist': ")[1][1:str(request.POST).split("'artist': ")[1].find(']')].replace("'","")
+            cover_image = request.FILES.get('cover_image')
+            artist_create = Songs.objects.create(name=name,cover_image=cover_image,date_of_release=date_of_release,rating=rating)
+            for i in artist.split(','):
+                artist_object = Artists.objects.get(id=int(i))
+                artist_create.artists.add(artist_object)
+            artist_create.save()
+            context = {'ret':'Song added successfully.','result':True}
+            return render(request, 'add_songs.html',context=context)
+        except:
+            context = {'ret': 'Error adding song.', 'result': True}
+            return render(request, 'add_songs.html', context=context)
     return render(request, 'add_songs.html')
 
 def get_artist_ajax(request):
     if request.GET.get('action')=='get_artist':
         all_artist = Artists.objects.all()
         return JsonResponse({'ret':list(all_artist.values()),'result':True},safe=False)
+
+def get_rating_ajax(request):
+    if request.GET.get('action')=='get_rating':
+        user = get_user_model()
+        all_rating = Rating.objects.filter(author=request.user.id)
+        return JsonResponse({'ret': list(all_rating.values()), 'result': True}, safe=False)
+
+def put_rating_ajax(request):
+    import ipdb;
+    ipdb.set_trace()
+    if request.GET.get('action')=='put_rating':
+        song_id = request.GET.get('song_id')
+        rating = request.GET.get('rating')
+        song_object =  Songs.objects.get(id=song_id)
+        import ipdb;ipdb.set_trace()
+        all_rating = Rating.objects.create(author=request.user,song=song_object,rating=rating)
+        all_rating.save()
+        return JsonResponse({'ret': True, 'result': True}, safe=False)

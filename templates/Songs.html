@@ -1,6 +1,10 @@
 {% extends 'header.html' %}
 {% block content %}
-
+<style>
+    .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
+  width: 100px;
+}
+</style>
 <div class="container-fluid">
     <div class="row">
         <div class="d-flex justify-content-center mb-4">
@@ -36,7 +40,7 @@
             <img src="{{song.cover_image.url}}" width="80%">
         </div>
         <div class="col-lg-2 col-mb-6 col-sm-12 mt-4">
-            <h6>{{song.name}}</h6>
+            <h6>{{song.name}}</h6><input id="song_id" value="{{song.id}}" hidden/>
         </div>
         <div class="col-lg-3 col-mb-6 col-sm-12 mt-4">
             <h6>
@@ -49,7 +53,14 @@
             <h6>{{song.date_of_release}}</h6>
         </div>
         <div class="col-lg-2 col-mb-6 col-sm-12 mt-4">
-            <h6>{{song.rating}}</h6>
+           <select class="selectpicker" id="artist_{{song.id}}" name="artist" onchange="putRating(this)">
+                <option value=""></option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                </select>
         </div>
     </div>
     {% endfor %}
@@ -59,5 +70,44 @@
 {% for msg in messages %}
     alert('{{msg}}')
 {% endfor %}
+
+window.onload = async function(){
+    thisUrl = window.location.href.split('/').slice(0,3).join('/')
+      query_string = 'action=get_rating'
+      url = thisUrl + '/get_rating?' + query_string
+      response = await fetch(url)
+      data = await response.json()
+      console.log(data)
+      for(let c=0;c<data['ret'].length;c++){
+        document.getElementById('artist_'+data['ret'][c]['song_id']).value=data['ret'][c]['rating']
+        $('#artist_'+data['ret'][c]['song_id']).selectpicker('refresh')
+      }
+}
+
+function rating(e){
+
+     song_id = e.parentNode.parentNode.parentNode.firstChild.nextSibling.nextElementSibling.firstChild.nextElementSibling.nextElementSibling.getAttribute('value')
+     console.log(e.value,song_id)
+}
+
+async function putRating(e){
+  song_id = e.parentNode.parentNode.parentNode.firstChild.nextSibling.nextElementSibling.firstChild.nextElementSibling.nextElementSibling.getAttribute('value')
+  thisUrl = window.location.href.split('/').slice(0,3).join('/')
+  query_string = 'action=put_rating&song_id='+song_id+'&rating='+e.value
+  url = thisUrl + '/put_rating?' + query_string
+  response = await fetch(url)
+  data = await response.json()
+  console.log(data)
+  if (data['result']==true){
+    alert('Artist Added Successfully.')
+  }
+  else{
+    alert('Error Adding Artist.')
+  }
+}
+
+</script>
+<script>
+
 </script>
 {% endblock %}

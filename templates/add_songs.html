@@ -3,16 +3,14 @@
 {% block content %}
 <div class="d-flex justify-content-center">
     <div class="col-lg-4 col-mb-6 col-sm-6">
-
         <!-- Pills navs -->
-
         <!-- Pills content -->
         <div class="tab-content">
           <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
             <form id="add_song_form" method="POST" action="/add_song" enctype="multipart/form-data">
               {% csrf_token %}
               <div class="text-center mb-3">
-                <p><b>Add Artist</b></p>
+                <p><b>Add Songs</b></p>
               </div>
               <!-- Email input -->
               <div class="form-outline mb-2">
@@ -31,10 +29,40 @@
                 <label class="form-label" for="artist">Artist</label></br>
                 <select class="selectpicker" id="artist" name="artist" multiple data-live-search="true">
                 </select>
+                <button class="btn btn-primary" type="button" onclick="add_artist_page(this)"><i style="font-size: large;" class="bi bi-plus-square"></i></button>
               </div>
               <div class="form-outline mb-2">
                 <label class="form-label" for="rating">Rating</label>
                 <input type="number" id="rating" name="rating" class="form-control" />
+              </div>
+              <!-- Submit button -->
+              <button type="button" class="btn btn-primary btn-block mb-4" onclick="AddSong(this)">Add</button>
+
+            </form>
+          </div>
+        </div>
+    </div>
+  <div class="col-lg-4 col-mb-6 col-sm-6" style="display:none" id="artist_page">
+        <!-- Pills content -->
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
+            <form method="POST" action="">
+              {% csrf_token %}
+              <div class="text-center mb-3">
+                <p><b>Add Artist</b></p>
+              </div>
+              <!-- Email input -->
+              <div class="form-outline mb-2">
+                <label class="form-label" for="name">Artist Name</label>
+                <input type="text" id="artist_name" name="name" class="form-control" />
+              </div>
+              <div class="form-outline mb-2">
+                <label class="form-label" for="date">DOB</label>
+                <input type="date" id="date" name="dob" class="form-control" />
+              </div>
+              <div class="form-outline mb-2">
+                <label class="form-label" for="bio">Bio</label>
+                <input type="text" id="bio" name="bio" class="form-control" />
               </div>
               <!-- Submit button -->
               <button type="button" class="btn btn-primary btn-block mb-4" onclick="AddArtist(this)">Add</button>
@@ -48,6 +76,9 @@
 {% for msg in messages %}
     alert('{{msg}}')
 {% endfor %}
+if ('{{ret}}'){
+  alert('{{ret}}')
+}
 
 
 window.onload = async function(){
@@ -68,7 +99,7 @@ window.onload = async function(){
    $('#artist').selectpicker('refresh')
 }
 
-async function AddArtist(e){
+async function AddSong(e){
   name = document.getElementById('name').value
   date_of_release = document.getElementById('date_of_release').value
   artist = document.getElementById('artist').value
@@ -92,5 +123,60 @@ async function AddArtist(e){
   document.getElementById('add_song_form').submit()
 }
 
+async function AddArtist(e){
+  name = document.getElementById('artist_name').value
+  dob = document.getElementById('date').value
+  bio = document.getElementById('bio').value
+  if (name == ''){
+    alert('Please enter name')
+    return
+  }
+  if (dob == ''){
+    alert('Please enter dob')
+    return
+  }
+  if (bio == ''){
+    alert('Please enter bio')
+    return
+  }
+  thisUrl = window.location.href.split('/').slice(0,3).join('/')
+  query_string = 'action=add_artist&name='+name+'&dob='+dob+'&bio='+bio
+  url = thisUrl + '/add_artist?' + query_string
+  response = await fetch(url)
+  data = await response.json()
+  console.log(data)
+  if (data['result']==true){
+    document.getElementById('artist').innerHTML=""
+    $('#artist').selectpicker('refresh')
+    alert('Artist Added Successfully.')
+    get_artist_list()
+  }
+  else{
+    alert('Error Adding Artist.')
+  }
+}
+
+function add_artist_page(e){
+  document.getElementById('artist_page').style.display=''
+
+}
+
+async function get_artist_list(){
+  thisUrl = window.location.href.split('/').slice(0,3).join('/')
+  query_string = 'action=get_artist'
+  url = thisUrl + '/get_artist?' + query_string
+  response = await fetch(url)
+  data = await response.json()
+  console.log(data['ret'].length)
+  var select = document.getElementById("artist");
+    for(let i = 0; i < data['ret'].length; i++) {
+      console.log(i)
+        var option = document.createElement('option');
+        option.text = data['ret'][i].name
+        option.value = data['ret'][i].id;
+        select.add(option, 0);
+    }
+   $('#artist').selectpicker('refresh')
+}
 </script>
 {% endblock %}
