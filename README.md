@@ -1,7 +1,7 @@
 # deltax-fresh2022
 
 Installation:
-  1. git clone https://github.com/Nikhilhc/deltax-fresh2022.git
+  1. git clone -b master https://github.com/Nikhilhc/deltax-fresh2022.git
   2. pip install -r requirements.txt
   3. python manage.py makemigrations
   4. python manage.py migrate
