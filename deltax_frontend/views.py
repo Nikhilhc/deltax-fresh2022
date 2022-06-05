@@ -8,6 +8,7 @@ from django.contrib.auth import get_user_model
 from .models import Songs,Artists,Rating
 from django.db.models import Avg,Count
 import json
+from django.contrib.auth.decorators import login_required
 
 
 
@@ -59,6 +60,7 @@ def logout_view(request):
     messages.success(request, 'Successfully Logged Out. Feel free to login again')
     return redirect('deltax_frontend:login')
 
+@login_required
 def Songs_page(request):
     all_songs = Songs.objects.all()
     lst=[]
@@ -76,6 +78,7 @@ def Songs_page(request):
     context = {'all_songs':all_songs1[:10]}
     return render(request,'Songs.html',context=context)
 
+@login_required
 def artists_page(request):
     all_artists = Artists.objects.all()
     artist_name = []
@@ -95,6 +98,7 @@ def artists_page(request):
     context = {'all_artists':all_artists,'artist_details':artist_details_full}
     return render(request,'artists.html',context=context)
 
+@login_required
 def add_artist_ajax(request):
     if request.GET.get('action')=='add_artist':
         name = request.GET.get('name')
@@ -105,6 +109,7 @@ def add_artist_ajax(request):
         return JsonResponse({'ret':True,'result':True})
     return render(request, 'add_artist.html')
 
+@login_required
 def add_song(request):
     if request.method =='POST':
         try:
@@ -126,17 +131,20 @@ def add_song(request):
             return render(request, 'add_songs.html', context=context)
     return render(request, 'add_songs.html')
 
+@login_required
 def get_artist_ajax(request):
     if request.GET.get('action')=='get_artist':
         all_artist = Artists.objects.all()
         return JsonResponse({'ret':list(all_artist.values()),'result':True},safe=False)
 
+@login_required
 def get_rating_ajax(request):
     if request.GET.get('action')=='get_rating':
         user = get_user_model()
         all_rating = Rating.objects.filter(author=request.user.id)
         return JsonResponse({'ret': list(all_rating.values()), 'result': True}, safe=False)
 
+@login_required
 def put_rating_ajax(request):
     if request.GET.get('action')=='put_rating':
         song_id = request.GET.get('song_id')
