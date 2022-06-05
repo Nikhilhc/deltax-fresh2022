@@ -37,7 +37,7 @@ class SongsView(APIView):
     def get(self,request,**kwargs):
         artists = Songs.objects.all()
         serializer = SongsSerializer(artists, many=True)
-        return JsonResponse(serializer.data,safe=False)
+        return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
         '''
@@ -51,6 +51,6 @@ class SongsView(APIView):
         serializer = SongsSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
