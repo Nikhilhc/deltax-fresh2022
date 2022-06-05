@@ -80,6 +80,26 @@ def Songs_page(request):
 
 @login_required
 def artists_page(request):
+    all_songs = Songs.objects.all()
+    lst = []
+    sorted_lst = sorted(Rating.objects.all().values_list('song').annotate(Avg('rating')))
+    sorted_lst.sort(reverse=True, key=lambda a: a[1])
+    for i in sorted_lst:
+        lst.append(i[0])
+    objects = Songs.objects.filter(id__in=lst)
+    all_songs1 = sorted(objects, key=lambda i: lst.index(i.pk))
+    for i in all_songs:
+        if i in all_songs1:
+            continue
+        else:
+            all_songs1.append(i)
+    top_ten_artists=[]
+    for i in range(len(all_songs1)):
+        for j in list(all_songs1[i].artists.values().distinct()):
+            if j not in lst:
+                top_ten_artists.append(j)
+            else:
+                continue
     all_artists = Artists.objects.all()
     artist_name = []
     user = get_user_model()
@@ -87,15 +107,15 @@ def artists_page(request):
     artist_details_full = []
     if request.method=='POST':
         print(request.method)
-    for i in all_artists:
-        artist_name.append((i.name,i.dob))
+    for i in top_ten_artists:
+        artist_name.append((i['name'],i['dob']))
     for i in artist_name:
         artist_details['name']=i[0]
         artist_details['details'] = Songs.objects.filter(artists__name=i[0])
         artist_details['dob']=i[1]
         artist_details_full.append(artist_details.copy())
     all_songs = Songs.objects.all()
-    context = {'all_artists':all_artists,'artist_details':artist_details_full}
+    context = {'all_artists':all_artists,'artist_details':artist_details_full[:10]}
     return render(request,'artists.html',context=context)
 
 @login_required

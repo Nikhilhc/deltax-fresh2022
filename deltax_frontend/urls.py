@@ -11,6 +11,7 @@ urlpatterns = [
     path("register", register_request, name="register"),
     path("login", login_view, name="login"),
     path("logout", logout_view, name="logout"),
+    path("", Songs_page, name="songs"),
     path("songs", Songs_page, name="songs"),
     path("artist", artists_page, name="artist"),
     path("add_artist", add_artist_ajax, name="add_artist"),
